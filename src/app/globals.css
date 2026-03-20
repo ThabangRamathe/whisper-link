@@ -4,12 +4,12 @@
 /* Design tokens (Blueprint D) */
 :root {
   /* Blueprint D - dark-first tokens */
-  --background: #24202E; /* very dark desaturated violet */
+  --background: #231f2d; /* very dark desaturated violet */
   --surface: #2e2836; /* slightly lighter card surface */
   --foreground: #e8eef6; /* legible light text */
-  --muted: #9aa6b2; /* secondary text */
-  --primary: #5540BF; /* deep violet (headline) */
-  --accent: #5893F0; /* bright clean blue (CTA) */
+  --muted: ##332e42; /* secondary text */
+  --primary: #5540bf; /* deep violet (headline) */
+  --accent: #5591f1; /* bright clean blue (CTA) */
   --border: rgba(255,255,255,0.06);
   --danger: #ff6b6b;
   --radius: 12px;
@@ -105,4 +105,30 @@ code, pre, textarea { color: var(--foreground); font-family: ui-monospace, SFMon
   outline: none;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
 }
+
+/* Responsive helpers */
+/* Responsive type scale */
+html { font-size: 15px; }
+@media (min-width: 640px) { html { font-size: 16px; } }
+@media (min-width: 1024px) { html { font-size: 17px; } }
+
+/* Responsive container helper used by app pages */
+.container-max {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .container-max { max-width: 720px; padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .container-max { max-width: 1024px; padding-left: 2rem; padding-right: 2rem; }
+}
+
+/* Responsive textarea heights */
+.textarea-responsive { height: 7rem; }
+@media (min-width: 640px) { .textarea-responsive { height: 10rem; } }
+@media (min-width: 1024px) { .textarea-responsive { height: 12rem; } }
 
