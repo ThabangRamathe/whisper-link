@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { decryptSecret } from "../../lib/crypto";
 import Toast from "./Toast";
-import { Eye, Clipboard, AlertTriangle, Lock, Home, ShieldCheck, AlertCircle, ShieldAlert } from "lucide-react";
+import { Eye, Clipboard, Home, ShieldCheck, AlertCircle, ShieldAlert } from "lucide-react";
 
 type Props = { token: string };
 
