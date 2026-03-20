@@ -1,26 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Design tokens (Blueprint D) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Blueprint D - dark-first tokens */
+  --background: #24202E; /* very dark desaturated violet */
+  --surface: #2e2836; /* slightly lighter card surface */
+  --foreground: #e8eef6; /* legible light text */
+  --muted: #9aa6b2; /* secondary text */
+  --primary: #5540BF; /* deep violet (headline) */
+  --accent: #5893F0; /* bright clean blue (CTA) */
+  --border: rgba(255,255,255,0.06);
+  --danger: #ff6b6b;
+  --radius: 12px;
+  --shadow-elevated: 0 8px 30px rgba(2,6,23,0.6);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --surface: #fbfbfd;
+    --foreground: #0b1220;
+    --muted: #6b7280;
+    --primary: #5540BF; /* keep primary consistent */
+    --accent: #5893F0; /* keep accent consistent */
+    --border: rgba(11,18,32,0.06);
+    --danger: #dc2626;
   }
 }
 
+/* Base page styles */
+html, body, #__next {
+  height: 100%;
+}
+
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Utility classes used by the secret UI (keeps Tailwind usage minimal and stable) */
+.bg-background { background: var(--background) !important; }
+.text-foreground { color: var(--foreground) !important; }
+.bg-surface { background: var(--surface) !important; }
+.border-border { border-color: var(--border) !important; }
+.text-muted { color: var(--muted) !important; }
+.text-muted-foreground { color: color-mix(in srgb, var(--foreground) 70%, var(--muted) 30%) !important; }
+.text-primary { color: var(--primary) !important; }
+.text-accent { color: var(--accent) !important; }
+.bg-accent { background: var(--accent) !important; color: white !important; }
+.bg-danger { background: var(--danger) !important; }
+.text-danger { color: var(--danger) !important; }
+.border-danger { border-color: color-mix(in srgb, var(--danger) 30%, transparent) !important; }
+
+/* Button elevation and subtle motion */
+.btn-elevate {
+  box-shadow: var(--shadow-elevated);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+.btn-elevate:active { transform: translateY(1px) scale(0.998); }
+.btn-elevate:hover { transform: translateY(-2px); }
+
+/* Toast + small animations */
+.fade-in { animation: fadeIn 220ms ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Shimmer used for link generation feedback */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  height: 100%;
+  width: 200%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 55%, transparent 100%);
+  transform: translateX(0);
+  animation: shimmer 900ms linear infinite;
+}
+@keyframes shimmer { to { transform: translateX(50%); } }
+
+/* Copy success tiny check animation */
+.copy-success {
+  animation: copyPop 360ms ease both;
+}
+@keyframes copyPop { 0% { transform: scale(0.96); opacity: 0.0 } 60% { transform: scale(1.03); opacity: 1 } 100% { transform: scale(1); opacity: 1 } }
+
+/* Small helpers */
+.rounded-xl { border-radius: var(--radius); }
+.rounded-md { border-radius: calc(var(--radius) / 2); }
+
+/* Ensure code blocks and textareas inherit foreground */
+code, pre, textarea { color: var(--foreground); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace; }
+
+/* Accessibility: focus styles */
+:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
