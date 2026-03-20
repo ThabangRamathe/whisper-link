@@ -44,9 +44,9 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
   // Try to use GETDEL if the client exposes it; otherwise fall back to a
   // get+del sequence (not strictly atomic on remote Redis, but Upstash REST
   // may not expose GETDEL directly).
-  if ((client as any).getdel) {
+  if ((client as UpstashRedis).getdel) {
     wrapper.getdel = async (key: string) => {
-      const v = await (client as any).getdel(key);
+      const v = await (client as UpstashRedis).getdel(key);
       return v === null || v === undefined ? null : String(v);
     };
   } else {
