@@ -15,6 +15,7 @@ let _redis: RedisLike;
 // Prefer Upstash when environment variables are present. Use the REST
 // credentials: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  console.log("Using Upstash Redis client");
   const client = new UpstashRedis({
     url: process.env.UPSTASH_REDIS_REST_URL,
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -59,6 +60,7 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
 
   _redis = wrapper;
 } else {
+  console.log("Using in-memory Redis fallback");
   // In-memory fallback for local development (same shape as before).
   const store = new Map<string, { value: string; expiresAt: number | null }>();
 
