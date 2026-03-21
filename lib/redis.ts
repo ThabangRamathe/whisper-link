@@ -15,7 +15,6 @@ let _redis: RedisLike;
 // Prefer Upstash when environment variables are present. Use the REST
 // credentials: KV_REST_API_URL and KV_REST_API_TOKEN.
 if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-  console.log("Using Upstash Redis client");
   const client = new UpstashRedis({
     url: process.env.KV_REST_API_URL,
     token: process.env.KV_REST_API_TOKEN,
@@ -24,7 +23,19 @@ if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
   const wrapper: RedisLike & { getdel?: (k: string) => Promise<string | null> } = {
     async get(key: string) {
       const v = await client.get(key);
-      return v === null || v === undefined ? null : String(v);
+      if (v === null || v === undefined) return null;
+      if (typeof v === "string") return v;
+      if (typeof v === "object") {
+        // Normalize common shapes coming from different clients/SDKs
+        // e.g. { result: 'value' } or { value: 'value' }
+        const o = v as Record<string, unknown>;
+        if ("result" in o && typeof o["result"] !== "object") return String(o["result"]);
+        if ("value" in o && typeof o["value"] !== "object") return String(o["value"]);
+        if ("data" in o && typeof o["data"] !== "object") return String(o["data"]);
+        // If it's an object shape (already parsed JSON), return the stringified JSON
+        return JSON.stringify(o);
+      }
+      return String(v);
     },
     async set(key: string, value: string, mode?: string, ttl?: number) {
       // upstash `set` accepts options like { ex: seconds }
@@ -48,7 +59,16 @@ if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
   if ((client as UpstashRedis).getdel) {
     wrapper.getdel = async (key: string) => {
       const v = await (client as UpstashRedis).getdel(key);
-      return v === null || v === undefined ? null : String(v);
+      if (v === null || v === undefined) return null;
+      if (typeof v === "string") return v;
+      if (typeof v === "object") {
+        const o = v as Record<string, unknown>;
+        if ("result" in o && typeof o["result"] !== "object") return String(o["result"]);
+        if ("value" in o && typeof o["value"] !== "object") return String(o["value"]);
+        if ("data" in o && typeof o["data"] !== "object") return String(o["data"]);
+        return JSON.stringify(o);
+      }
+      return String(v);
     };
   } else {
     wrapper.getdel = async (key: string) => {
@@ -60,7 +80,6 @@ if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
 
   _redis = wrapper;
 } else {
-  console.log("Using in-memory Redis fallback");
   // In-memory fallback for local development (same shape as before).
   const store = new Map<string, { value: string; expiresAt: number | null }>();
 

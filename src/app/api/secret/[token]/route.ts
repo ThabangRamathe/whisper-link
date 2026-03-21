@@ -39,7 +39,6 @@ export async function GET(
       );
     }
 
-    console.log(`Secret retrieved for token ${token}:`, data);
     const parsed = JSON.parse(data);
 
     return NextResponse.json({
