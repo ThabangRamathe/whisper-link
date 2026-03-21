@@ -13,8 +13,8 @@ type RedisLike = {
 let _redis: RedisLike;
 
 // Prefer Upstash when environment variables are present. Use the REST
-// credentials: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+// credentials: KV_REST_API_URL and KV_REST_API_TOKEN.
+if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
   console.log("Using Upstash Redis client");
   const client = new UpstashRedis({
     url: process.env.KV_REST_API_URL,
